@@ -22,10 +22,6 @@ public class Livro {
     private Long id;
 
     @Column(nullable = false)
-    private String isbn;
-
-
-    @Column(nullable = false)
     private String titulo;
 
     @Column(name = "data_publicacao", nullable = false)
