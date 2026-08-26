@@ -1,13 +1,13 @@
 package br.com.araujo.libraryapi.repository;
 
-import br.com.araujo.libraryapi.model.Autor;
-import br.com.araujo.libraryapi.model.GeneroLivro;
-import br.com.araujo.libraryapi.model.Livro;
-import jakarta.transaction.Transactional;
+import br.com.araujo.libraryapi.autor.model.Autor;
+import br.com.araujo.libraryapi.autor.repository.AutorRepository;
+import br.com.araujo.libraryapi.livro.model.GeneroLivro;
+import br.com.araujo.libraryapi.livro.model.Livro;
+import br.com.araujo.libraryapi.livro.repository.LivroRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Example;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
