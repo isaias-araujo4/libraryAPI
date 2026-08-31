@@ -6,6 +6,7 @@ import br.com.araujo.libraryapi.autor.service.AutorService;
 import br.com.araujo.libraryapi.global.dto.ErroResponse;
 import br.com.araujo.libraryapi.global.exeptions.OperacaoNaoPermitidaException;
 import br.com.araujo.libraryapi.global.exeptions.RegistroDuplicadoException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class AutorController {
     private final AutorService autorService;
 
     @PostMapping
-    public  ResponseEntity<Object> salvar(@RequestBody AutorDto autor){
+    public  ResponseEntity<Object> salvar(@RequestBody @Valid AutorDto autor){
         try {
         Autor autorEntidade = autor.mapearParaAutor();
         autorService.salvar(autorEntidade);
@@ -93,7 +94,7 @@ public class AutorController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Object> atualizar(@PathVariable Long id, @RequestBody AutorDto autorDto) {
+    public ResponseEntity<Object> atualizar(@PathVariable Long id, @RequestBody @Valid AutorDto autorDto) {
         try {
             Long idAutor = id;
             Optional<Autor> autorOptional = autorService.obterPorId(idAutor);
