@@ -22,4 +22,6 @@ public interface LivroRepository extends JpaRepository<Livro, Long> {
 
     // select * from livros where data_publicacao >= ? and data_publicacao <= ?
     List<Livro> findByDataPublicacaoBetween(LocalDate inicio, LocalDate fim);
+
+    boolean existsByAutor(Autor autor);
 }
