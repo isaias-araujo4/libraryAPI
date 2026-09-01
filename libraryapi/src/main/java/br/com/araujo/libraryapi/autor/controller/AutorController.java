@@ -1,7 +1,8 @@
 package br.com.araujo.libraryapi.autor.controller;
 
+import br.com.araujo.libraryapi.autor.mappers.AutorMapper;
 import br.com.araujo.libraryapi.autor.model.Autor;
-import br.com.araujo.libraryapi.autor.model.dto.AutorDto;
+import br.com.araujo.libraryapi.autor.model.dto.AutorDTO;
 import br.com.araujo.libraryapi.autor.service.AutorService;
 import br.com.araujo.libraryapi.global.dto.ErroResponse;
 import br.com.araujo.libraryapi.global.exeptions.OperacaoNaoPermitidaException;
@@ -23,17 +24,18 @@ import java.util.stream.Collectors;
 public class AutorController {
 
     private final AutorService autorService;
+    private final AutorMapper autorMapper;
 
     @PostMapping
-    public  ResponseEntity<Object> salvar(@RequestBody @Valid AutorDto autor){
+    public  ResponseEntity<Object> salvar(@RequestBody @Valid AutorDTO autorDTO){
         try {
-        Autor autorEntidade = autor.mapearParaAutor();
-        autorService.salvar(autorEntidade);
+        Autor autor = autorMapper.toEntity(autorDTO);
+        autorService.salvar(autor);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(autorEntidade.getId())
+                .buildAndExpand(autor.getId())
                 .toUri();
 
         return  ResponseEntity.created(location).build();
@@ -44,20 +46,17 @@ public class AutorController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<AutorDto> obterDetalhes(@PathVariable Long id){
+    public ResponseEntity<AutorDTO> obterDetalhes(@PathVariable Long id){
         Long idAutor = id;
-        Optional<Autor> autorOptional = autorService.obterPorId(idAutor);
 
-        if (autorOptional.isPresent()){
-            Autor autor = autorOptional.get();
-            AutorDto dto = new AutorDto(autor.getId(),
-                    autor.getNome(),
-                    autor.getDataNascimento(),
-                    autor.getNacionalidade());
-            return ResponseEntity.ok(dto);
-        }
+        return  autorService
+                .obterPorId(idAutor)
+                .map(autor -> {
+                    AutorDTO autorDTO = autorMapper.toAutorDTO(autor);
+                    return ResponseEntity.ok(autorDTO);
+                }).orElseGet(() -> ResponseEntity.notFound().build());
 
-        return ResponseEntity.notFound().build();
+
     }
 
     @DeleteMapping("{id}")
@@ -80,21 +79,16 @@ public class AutorController {
     }
 
     @GetMapping
-    public  ResponseEntity<List<AutorDto>> pesquisar(@RequestParam(value = "nome", required = false) String nome, @RequestParam(value = "nacionalidade", required = false)String nacionalidade){
+    public  ResponseEntity<List<AutorDTO>> pesquisar(@RequestParam(value = "nome", required = false) String nome, @RequestParam(value = "nacionalidade", required = false)String nacionalidade){
         List<Autor> resultado = autorService.pesquisa(nome, nacionalidade);
-        List<AutorDto> lista = resultado
+        List<AutorDTO> lista = resultado
                 .stream()
-                .map(autor -> new AutorDto(
-                        autor.getId(),
-                        autor.getNome(),
-                        autor.getDataNascimento(),
-                        autor.getNacionalidade()
-                )).collect(Collectors.toList());
+                .map(autorMapper::toAutorDTO).collect(Collectors.toList());
         return  ResponseEntity.ok(lista);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Object> atualizar(@PathVariable Long id, @RequestBody @Valid AutorDto autorDto) {
+    public ResponseEntity<Object> atualizar(@PathVariable Long id, @RequestBody @Valid AutorDTO autorDto) {
         try {
             Long idAutor = id;
             Optional<Autor> autorOptional = autorService.obterPorId(idAutor);

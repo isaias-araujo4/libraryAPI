@@ -42,6 +42,9 @@ public class Autor {
     @Column(name = "data_atualizacao")
     private LocalDateTime dataatualizacao;
 
+    @Column(name = "id_usuario")
+    private Long idUsuario;
+
     //relação um autor para muitos livros
     @OneToMany(mappedBy = "autor")
     private List<Livro>livros;
