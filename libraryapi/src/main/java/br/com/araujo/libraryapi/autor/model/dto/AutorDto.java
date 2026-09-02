@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Past;
 
 import java.time.LocalDate;
 
-public record AutorDto(
+public record AutorDTO(
         Long id,
 
         @NotBlank(message = "campo obrigatorio")
@@ -18,11 +18,4 @@ public record AutorDto(
 
         @NotBlank(message = "campo obrigatorio")
         String nacionalidade) {
-    public Autor mapearParaAutor(){
-        Autor autor = new Autor();
-        autor.setNome(this.nome);
-        autor.setDataNascimento(this.dataNascimento);
-        autor.setNacionalidade(this.nacionalidade);
-        return autor;
-    }
 }
