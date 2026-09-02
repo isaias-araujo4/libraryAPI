@@ -4,14 +4,14 @@ import br.com.araujo.libraryapi.autor.mappers.AutorMapper;
 import br.com.araujo.libraryapi.autor.model.Autor;
 import br.com.araujo.libraryapi.autor.model.dto.AutorDTO;
 import br.com.araujo.libraryapi.autor.service.AutorService;
+import br.com.araujo.libraryapi.global.common.GenericController;
 import br.com.araujo.libraryapi.global.dto.ErroResponse;
-import br.com.araujo.libraryapi.global.exeptions.OperacaoNaoPermitidaException;
-import br.com.araujo.libraryapi.global.exeptions.RegistroDuplicadoException;
+import br.com.araujo.libraryapi.global.exceptions.OperacaoNaoPermitidaException;
+import br.com.araujo.libraryapi.global.exceptions.RegistroDuplicadoException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -21,28 +21,18 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("autores") // http://localhost:8080/autores
 @RequiredArgsConstructor
-public class AutorController {
+public class AutorController implements GenericController {
 
     private final AutorService autorService;
     private final AutorMapper autorMapper;
 
     @PostMapping
-    public  ResponseEntity<Object> salvar(@RequestBody @Valid AutorDTO autorDTO){
-        try {
+    public  ResponseEntity<Void> salvar(@RequestBody @Valid AutorDTO autorDTO){
+
         Autor autor = autorMapper.toEntity(autorDTO);
         autorService.salvar(autor);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(autor.getId())
-                .toUri();
-
+        URI location = gerarHeaderLocation(autor.getId());
         return  ResponseEntity.created(location).build();
-        } catch(RegistroDuplicadoException e){
-            var erroDto = ErroResponse.conflito(e.getMessage());
-            return ResponseEntity.status(erroDto.status()).body(erroDto);
-        }
     }
 
     @GetMapping("{id}")
@@ -55,13 +45,10 @@ public class AutorController {
                     AutorDTO autorDTO = autorMapper.toAutorDTO(autor);
                     return ResponseEntity.ok(autorDTO);
                 }).orElseGet(() -> ResponseEntity.notFound().build());
-
-
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Object> deletar(@PathVariable Long id){
-        try {
+    public ResponseEntity<Void> deletar(@PathVariable Long id){
 
         Long idAutor = id;
         Optional<Autor> autorOptional = autorService.obterPorId(idAutor);
@@ -69,13 +56,11 @@ public class AutorController {
         if (autorOptional.isEmpty()){
             return ResponseEntity.notFound().build();
         }
+
         autorService.deletar(autorOptional.get());
 
         return ResponseEntity.noContent().build();
-        }catch (OperacaoNaoPermitidaException e){
-            var  erroResponse = ErroResponse.respostaPadrao(e.getMessage());
-            return ResponseEntity.status(erroResponse.status()).body(erroResponse);
-        }
+
     }
 
     @GetMapping
@@ -88,26 +73,23 @@ public class AutorController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Object> atualizar(@PathVariable Long id, @RequestBody @Valid AutorDTO autorDto) {
-        try {
-            Long idAutor = id;
-            Optional<Autor> autorOptional = autorService.obterPorId(idAutor);
+    public ResponseEntity<Void> atualizar(@PathVariable Long id, @RequestBody @Valid AutorDTO autorDto) {
 
-            if (autorOptional.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
+        Long idAutor = id;
+        Optional<Autor> autorOptional = autorService.obterPorId(idAutor);
 
-            var autor = autorOptional.get();
-            autor.setNome(autorDto.nome());
-            autor.setNacionalidade(autorDto.nacionalidade());
-            autor.setDataNascimento(autorDto.dataNascimento());
-
-            autorService.atualizar(autor);
-
-            return ResponseEntity.noContent().build();
-        } catch (RegistroDuplicadoException e) {
-            var erroDto = ErroResponse.conflito(e.getMessage());
-            return ResponseEntity.status(erroDto.status()).body(erroDto);
+        if (autorOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
+
+        var autor = autorOptional.get();
+        autor.setNome(autorDto.nome());
+        autor.setNacionalidade(autorDto.nacionalidade());
+        autor.setDataNascimento(autorDto.dataNascimento());
+
+        autorService.atualizar(autor);
+
+        return ResponseEntity.noContent().build();
+
     }
 }

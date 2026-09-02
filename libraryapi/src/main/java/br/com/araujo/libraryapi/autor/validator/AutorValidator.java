@@ -2,7 +2,7 @@ package br.com.araujo.libraryapi.autor.validator;
 
 import br.com.araujo.libraryapi.autor.model.Autor;
 import br.com.araujo.libraryapi.autor.repository.AutorRepository;
-import br.com.araujo.libraryapi.global.exeptions.RegistroDuplicadoException;
+import br.com.araujo.libraryapi.global.exceptions.RegistroDuplicadoException;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

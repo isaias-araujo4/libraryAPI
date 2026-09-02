@@ -3,13 +3,12 @@ package br.com.araujo.libraryapi.autor.service;
 import br.com.araujo.libraryapi.autor.model.Autor;
 import br.com.araujo.libraryapi.autor.repository.AutorRepository;
 import br.com.araujo.libraryapi.autor.validator.AutorValidator;
-import br.com.araujo.libraryapi.global.exeptions.OperacaoNaoPermitidaException;
+import br.com.araujo.libraryapi.global.exceptions.OperacaoNaoPermitidaException;
 import br.com.araujo.libraryapi.livro.repository.LivroRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.Validator;
 
 import java.util.List;
 import java.util.Optional;

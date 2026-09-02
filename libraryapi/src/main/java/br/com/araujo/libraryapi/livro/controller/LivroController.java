@@ -1,36 +1,58 @@
 package br.com.araujo.libraryapi.livro.controller;
 
+import br.com.araujo.libraryapi.autor.model.dto.AutorDTO;
+import br.com.araujo.libraryapi.global.common.GenericController;
 import br.com.araujo.libraryapi.global.dto.ErroResponse;
-import br.com.araujo.libraryapi.global.exeptions.RegistroDuplicadoException;
+import br.com.araujo.libraryapi.global.exceptions.RegistroDuplicadoException;
 import br.com.araujo.libraryapi.livro.mappers.LivroMapper;
 import br.com.araujo.libraryapi.livro.model.Livro;
 import br.com.araujo.libraryapi.livro.model.dto.CadastroLivroDTO;
+import br.com.araujo.libraryapi.livro.model.dto.ResultadoPesquisaLivroDTO;
 import br.com.araujo.libraryapi.livro.service.LivroService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("livros")
 @RequiredArgsConstructor
-public class LivroController {
+public class LivroController implements GenericController {
 
     private final LivroService livroService;
     private final LivroMapper livroMapper;
 
     @PostMapping
-    public ResponseEntity<Object> salvar(@RequestBody @Valid CadastroLivroDTO cadastroLivroDTO){
-        try {
-            Livro livro = livroMapper.toEntity(cadastroLivroDTO);
-            livroService.salvar(livro);
-            return  ResponseEntity.ok(cadastroLivroDTO);
-        }catch (RegistroDuplicadoException e){
-            var erroDTO = ErroResponse.conflito(e.getMessage());
-            return  ResponseEntity.status(erroDTO.status()).body(erroDTO);
-        }
+    public ResponseEntity<Void> salvar(@RequestBody @Valid CadastroLivroDTO cadastroLivroDTO){
+
+        Livro livro = livroMapper.toEntity(cadastroLivroDTO);
+        livroService.salvar(livro);
+        URI location = gerarHeaderLocation(livro.getId());
+        return  ResponseEntity.created(location).build();
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<ResultadoPesquisaLivroDTO> obterDetalhes(@PathVariable Long id){
+        Long idLivro = id;
+
+        return livroService
+                .obterPorId(idLivro)
+                .map(livro ->{
+                    var resultadoLivroDTO = livroMapper.toLivroDTO(livro);
+                    return ResponseEntity.ok(resultadoLivroDTO);
+                }).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Object> deletar(@PathVariable Long id){
+        Long idLivro = id;
+
+        return livroService.obterPorId(idLivro)
+                .map(livro -> {
+                    livroService.deletar(livro);
+                    return ResponseEntity.noContent().build();
+                }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
