@@ -5,7 +5,7 @@ import br.com.araujo.libraryapi.autor.model.Autor;
 import br.com.araujo.libraryapi.autor.model.dto.AutorDTO;
 import br.com.araujo.libraryapi.autor.service.AutorService;
 import br.com.araujo.libraryapi.global.common.GenericController;
-import br.com.araujo.libraryapi.global.dto.ErroResponse;
+import br.com.araujo.libraryapi.global.DTO.ErroResponse;
 import br.com.araujo.libraryapi.global.exceptions.OperacaoNaoPermitidaException;
 import br.com.araujo.libraryapi.global.exceptions.RegistroDuplicadoException;
 import jakarta.validation.Valid;

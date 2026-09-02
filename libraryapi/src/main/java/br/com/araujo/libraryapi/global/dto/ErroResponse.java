@@ -1,4 +1,4 @@
-package br.com.araujo.libraryapi.global.dto;
+package br.com.araujo.libraryapi.global.DTO;
 
 import org.springframework.http.HttpStatus;
 

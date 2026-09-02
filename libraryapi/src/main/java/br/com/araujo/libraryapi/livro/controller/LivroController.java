@@ -1,13 +1,13 @@
 package br.com.araujo.libraryapi.livro.controller;
 
-import br.com.araujo.libraryapi.autor.model.dto.AutorDTO;
+import br.com.araujo.libraryapi.autor.model.DTO.AutorDTO;
 import br.com.araujo.libraryapi.global.common.GenericController;
-import br.com.araujo.libraryapi.global.dto.ErroResponse;
+import br.com.araujo.libraryapi.global.DTO.ErroResponse;
 import br.com.araujo.libraryapi.global.exceptions.RegistroDuplicadoException;
 import br.com.araujo.libraryapi.livro.mappers.LivroMapper;
 import br.com.araujo.libraryapi.livro.model.Livro;
-import br.com.araujo.libraryapi.livro.model.dto.CadastroLivroDTO;
-import br.com.araujo.libraryapi.livro.model.dto.ResultadoPesquisaLivroDTO;
+import br.com.araujo.libraryapi.livro.model.DTO.CadastroLivroDTO;
+import br.com.araujo.libraryapi.livro.model.DTO.ResultadoPesquisaLivroDTO;
 import br.com.araujo.libraryapi.livro.service.LivroService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
