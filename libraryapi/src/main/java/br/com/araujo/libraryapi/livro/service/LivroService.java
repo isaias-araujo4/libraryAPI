@@ -35,9 +35,6 @@ public class LivroService {
             Integer anoPublicacao){
 
         Specification<Livro> specs = null;
-
-        Specification<Livro>
-
         return  livroRepository.findAll(specs);
     }
 }

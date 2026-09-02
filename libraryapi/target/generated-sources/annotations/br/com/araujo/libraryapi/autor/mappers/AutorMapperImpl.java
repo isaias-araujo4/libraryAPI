@@ -8,24 +8,24 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-09-02T19:48:38-0300",
-    comments = "version: 1.6.3, compiler: Eclipse JDT (IDE) 3.46.100.v20260624-0231, environment: Java 21.0.11 (Eclipse Adoptium)"
+    date = "2026-09-02T20:01:49-0300",
+    comments = "version: 1.6.3, compiler: javac, environment: Java 26.0.2.1 (Oracle Corporation)"
 )
 @Component
 public class AutorMapperImpl implements AutorMapper {
 
     @Override
-    public Autor toEntity(AutorDTO autorDto) {
-        if ( autorDto == null ) {
+    public Autor toEntity(AutorDTO autorDTO) {
+        if ( autorDTO == null ) {
             return null;
         }
 
         Autor.AutorBuilder autor = Autor.builder();
 
-        autor.dataNascimento( autorDto.dataNascimento() );
-        autor.id( autorDto.id() );
-        autor.nacionalidade( autorDto.nacionalidade() );
-        autor.nome( autorDto.nome() );
+        autor.id( autorDTO.id() );
+        autor.nome( autorDTO.nome() );
+        autor.dataNascimento( autorDTO.dataNascimento() );
+        autor.nacionalidade( autorDTO.nacionalidade() );
 
         return autor.build();
     }
