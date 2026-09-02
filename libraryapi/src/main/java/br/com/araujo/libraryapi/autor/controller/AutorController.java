@@ -2,7 +2,7 @@ package br.com.araujo.libraryapi.autor.controller;
 
 import br.com.araujo.libraryapi.autor.mappers.AutorMapper;
 import br.com.araujo.libraryapi.autor.model.Autor;
-import br.com.araujo.libraryapi.autor.model.dto.AutorDTO;
+import br.com.araujo.libraryapi.autor.model.DTO.AutorDTO;
 import br.com.araujo.libraryapi.autor.service.AutorService;
 import br.com.araujo.libraryapi.global.common.GenericController;
 import br.com.araujo.libraryapi.global.DTO.ErroResponse;

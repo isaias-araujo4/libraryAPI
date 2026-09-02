@@ -1,4 +1,4 @@
-package br.com.araujo.libraryapi.autor.model.dto;
+package br.com.araujo.libraryapi.autor.model.DTO;
 
 import br.com.araujo.libraryapi.autor.model.Autor;
 import jakarta.validation.constraints.NotBlank;
