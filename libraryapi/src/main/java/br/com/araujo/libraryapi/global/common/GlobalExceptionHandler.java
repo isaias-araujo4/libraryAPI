@@ -1,5 +1,6 @@
 package br.com.araujo.libraryapi.global.common;
 
+import br.com.araujo.libraryapi.global.exceptions.CampoInvalidoException;
 import br.com.araujo.libraryapi.global.exceptions.OperacaoNaoPermitidaException;
 import br.com.araujo.libraryapi.global.exceptions.RegistroDuplicadoException;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,16 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public  ErroResponse handleOperacaoNaoPermitidaException(OperacaoNaoPermitidaException e){
         return ErroResponse.respostaPadrao(e.getMessage());
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErroResponse handleCampoInvalidoException(CampoInvalidoException e){
+        return  new ErroResponse(
+                HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                "Erro de validação",
+                List.of(new ErroBody(e.getCampo(), e.getMessage()))
+                );
     }
 
     public ErroResponse handleErrosNaoTratados(RuntimeException e){

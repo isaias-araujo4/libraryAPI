@@ -13,6 +13,7 @@ import br.com.araujo.libraryapi.livro.service.LivroService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,7 +62,7 @@ public class LivroController implements GenericController {
     }
 
     @GetMapping
-    public  ResponseEntity<List<ResultadoPesquisaLivroDTO>> pesquisa(
+    public  ResponseEntity<Page<ResultadoPesquisaLivroDTO>> pesquisa(
             @RequestParam String titulo,
 
             @RequestParam(value = "nome-autor")
@@ -71,13 +72,38 @@ public class LivroController implements GenericController {
             GeneroLivro genero,
 
             @RequestParam(value = "ano-publicacap")
-            Integer anoPublicacao){
-                var  resultado = livroService.pesquisa(titulo, nomeAutor, genero, anoPublicacao);
-                var lista = resultado.stream().map(livroMapper::toLivroDTO).collect(Collectors.toList());
+            Integer anoPublicacao,
 
-                 return ResponseEntity.ok(lista);
+            @RequestParam(value = "pagina", defaultValue = "0")
+            Integer pagina,
+
+            @RequestParam(value = "tamanho-pagina", defaultValue = "10")
+            Integer tamanhoPagina) {
+                Page<Livro> paginaResultado = livroService.pesquisa(titulo, nomeAutor, genero, anoPublicacao, pagina, tamanhoPagina);
+
+                Page<ResultadoPesquisaLivroDTO> resultado = paginaResultado.map(livroMapper::toLivroDTO);
+
+
+                 return ResponseEntity.ok(resultado);
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity<Object> atualizar(@PathVariable Long id, @RequestBody CadastroLivroDTO cadastroLivroDTO){
+        Long idLivro = id;
 
+        return livroService.obterPorId(idLivro)
+                .map(livro -> {
+                    Livro entidadeAuxiliar = livroMapper.toEntity(cadastroLivroDTO);
+                    livro.setDataPublicacao(entidadeAuxiliar.getDataPublicacao());
+                    livro.setPreco(entidadeAuxiliar.getPreco());
+                    livro.setGenero(entidadeAuxiliar.getGenero());
+                    livro.setTitulo(entidadeAuxiliar.getTitulo());
+                    livro.setAutor(entidadeAuxiliar.getAutor());
+
+                    livroService.atualizar(livro);
+
+                    return ResponseEntity.noContent().build();
+                }).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
 }

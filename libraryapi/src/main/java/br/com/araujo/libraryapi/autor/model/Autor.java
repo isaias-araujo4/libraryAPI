@@ -40,7 +40,7 @@ public class Autor {
 
     @LastModifiedDate
     @Column(name = "data_atualizacao")
-    private LocalDateTime dataatualizacao;
+    private LocalDateTime dataAtualizacao;
 
     @Column(name = "id_usuario")
     private Long idUsuario;

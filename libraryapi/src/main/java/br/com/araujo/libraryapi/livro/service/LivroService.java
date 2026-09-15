@@ -5,9 +5,12 @@ import br.com.araujo.libraryapi.livro.model.GeneroLivro;
 import br.com.araujo.libraryapi.livro.model.Livro;
 import br.com.araujo.libraryapi.livro.repository.LivroRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import  org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,11 +34,13 @@ public class LivroService {
         livroRepository.delete(livro);
     }
 
-    public List<Livro> pesquisa(
+    public Page<Livro> pesquisa(
             String titulo,
             String nomeAutor,
             GeneroLivro genero,
-            Integer anoPublicacao){
+            Integer anoPublicacao,
+            Integer pagina,
+            Integer tamanhoPagina){
 
         Specification<Livro> specs = Specification.where((root, query, cb) -> cb.conjunction() );
 
@@ -55,6 +60,17 @@ public class LivroService {
             specs = specs.and(nomeAutorLike(nomeAutor));
         }
 
-        return  livroRepository.findAll(specs);
+        Pageable pageRequest = PageRequest.of(pagina, tamanhoPagina);
+
+
+        return  livroRepository.findAll(specs, pageRequest);
+    }
+
+    public void atualizar(Livro livro) {
+        if (livro.getId() == null){
+            throw new IllegalArgumentException("para atualizar um livro é nescessario que ele esteja salvo ");
+        }
+
+        livroRepository.save(livro);
     }
 }
