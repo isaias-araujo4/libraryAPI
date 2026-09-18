@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -24,6 +25,7 @@ public class LivroController implements GenericController {
     private final LivroMapper livroMapper;
 
     @PostMapping
+    @PreAuthorize("hasAnyrole('ADMIN')")
     public ResponseEntity<Void> salvar(@RequestBody @Valid LivroRequestDTO livroRequestDTO){
 
         Livro livro = livroMapper.toEntity(livroRequestDTO);

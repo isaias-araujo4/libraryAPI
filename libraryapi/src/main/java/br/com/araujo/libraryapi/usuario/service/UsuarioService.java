@@ -19,7 +19,7 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
     }
 
-    public Usuario obterLogin(String login){
-        return usuarioRepository.findByLogin(login);
+    public Usuario obterLogin(String email){
+        return usuarioRepository.findByEmail(email);
     }
 }

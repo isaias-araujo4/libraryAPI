@@ -54,7 +54,7 @@ public class AutorController implements GenericController {
         return autorService.obterPorId(idAutor)
                 .map(autor -> {
                     autorService.deletar(autor);
-                    return ResponseEntity.ok(LivroResponseDTO);
+                    return ResponseEntity.ok(AutorResponseDTO);
                 }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
