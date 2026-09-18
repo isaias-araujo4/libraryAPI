@@ -62,11 +62,8 @@ public class AutorController implements GenericController {
     public ResponseEntity<Page<AutorResponseDTO>> pesquisa(
             @RequestParam String nome,
 
-            @RequestParam(value = "nome_autor")
-            String nomeLivro,
-
-            @RequestParam(value = "data-nascimento")
-            Integer dataNascimento,
+            @RequestParam(value = "titulo")
+            String titulo,
 
             @RequestParam
             String nacionalidade,
@@ -77,7 +74,7 @@ public class AutorController implements GenericController {
             @RequestParam(value = "tamanho-pagina", defaultValue = "10")
             Integer tamanhoPagina
     ) {
-        Page<Autor> paginaResultado = autorService.pesquisa(nome, nomeLivro, dataNascimento, nacionalidade, pagina, tamanhoPagina);
+        Page<Autor> paginaResultado = autorService.pesquisa(nome, titulo, nacionalidade, pagina, tamanhoPagina);
 
         Page<AutorResponseDTO> resultado = paginaResultado.map(autorMapper::toResponseDTO);
 
