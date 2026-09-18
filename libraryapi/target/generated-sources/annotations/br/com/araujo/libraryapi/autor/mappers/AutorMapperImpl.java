@@ -1,7 +1,7 @@
 package br.com.araujo.libraryapi.autor.mappers;
 
 import br.com.araujo.libraryapi.autor.model.Autor;
-import br.com.araujo.libraryapi.autor.model.DTO.AutorDTO;
+
 import java.time.LocalDate;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
@@ -15,23 +15,23 @@ import org.springframework.stereotype.Component;
 public class AutorMapperImpl implements AutorMapper {
 
     @Override
-    public Autor toEntity(AutorDTO autorDTO) {
-        if ( autorDTO == null ) {
+    public Autor toEntity(br.com.araujo.libraryapi.autor.model.DTO.AutorRequestDTO autorRequestDTO) {
+        if ( autorRequestDTO == null ) {
             return null;
         }
 
         Autor.AutorBuilder autor = Autor.builder();
 
-        autor.id( autorDTO.id() );
-        autor.nome( autorDTO.nome() );
-        autor.dataNascimento( autorDTO.dataNascimento() );
-        autor.nacionalidade( autorDTO.nacionalidade() );
+        autor.id( autorRequestDTO.id() );
+        autor.nome( autorRequestDTO.nome() );
+        autor.dataNascimento( autorRequestDTO.dataNascimento() );
+        autor.nacionalidade( autorRequestDTO.nacionalidade() );
 
         return autor.build();
     }
 
     @Override
-    public AutorDTO toAutorDTO(Autor autor) {
+    public br.com.araujo.libraryapi.autor.model.DTO.AutorRequestDTO toAutorDTO(Autor autor) {
         if ( autor == null ) {
             return null;
         }
@@ -46,8 +46,8 @@ public class AutorMapperImpl implements AutorMapper {
         dataNascimento = autor.getDataNascimento();
         nacionalidade = autor.getNacionalidade();
 
-        AutorDTO autorDTO = new AutorDTO( id, nome, dataNascimento, nacionalidade );
+        br.com.araujo.libraryapi.autor.model.DTO.AutorRequestDTO autorRequestDTO = new br.com.araujo.libraryapi.autor.model.DTO.AutorRequestDTO( id, nome, dataNascimento, nacionalidade );
 
-        return autorDTO;
+        return autorRequestDTO;
     }
 }

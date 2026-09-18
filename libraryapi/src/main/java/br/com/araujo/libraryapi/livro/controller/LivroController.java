@@ -1,25 +1,19 @@
 package br.com.araujo.libraryapi.livro.controller;
 
-import br.com.araujo.libraryapi.autor.model.DTO.AutorDTO;
 import br.com.araujo.libraryapi.global.common.GenericController;
-import br.com.araujo.libraryapi.global.DTO.ErroResponse;
-import br.com.araujo.libraryapi.global.exceptions.RegistroDuplicadoException;
 import br.com.araujo.libraryapi.livro.mappers.LivroMapper;
 import br.com.araujo.libraryapi.livro.model.GeneroLivro;
 import br.com.araujo.libraryapi.livro.model.Livro;
-import br.com.araujo.libraryapi.livro.model.dto.CadastroLivroDTO;
-import br.com.araujo.libraryapi.livro.model.dto.ResultadoPesquisaLivroDTO;
+import br.com.araujo.libraryapi.livro.model.dto.LivroRequestDTO;
+import br.com.araujo.libraryapi.livro.model.dto.LivroResponseDTO;
 import br.com.araujo.libraryapi.livro.service.LivroService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("livros")
@@ -30,16 +24,16 @@ public class LivroController implements GenericController {
     private final LivroMapper livroMapper;
 
     @PostMapping
-    public ResponseEntity<Void> salvar(@RequestBody @Valid CadastroLivroDTO cadastroLivroDTO){
+    public ResponseEntity<Void> salvar(@RequestBody @Valid LivroRequestDTO livroRequestDTO){
 
-        Livro livro = livroMapper.toEntity(cadastroLivroDTO);
+        Livro livro = livroMapper.toEntity(livroRequestDTO);
         livroService.salvar(livro);
         URI location = gerarHeaderLocation(livro.getId());
         return  ResponseEntity.created(location).build();
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ResultadoPesquisaLivroDTO> obterDetalhes(@PathVariable Long id){
+    public ResponseEntity<LivroResponseDTO> obterDetalhes(@PathVariable Long id){
         Long idLivro = id;
 
         return livroService
@@ -62,7 +56,7 @@ public class LivroController implements GenericController {
     }
 
     @GetMapping
-    public  ResponseEntity<Page<ResultadoPesquisaLivroDTO>> pesquisa(
+    public  ResponseEntity<Page<LivroResponseDTO>> pesquisa(
             @RequestParam String titulo,
 
             @RequestParam(value = "nome-autor")
@@ -81,19 +75,19 @@ public class LivroController implements GenericController {
             Integer tamanhoPagina) {
                 Page<Livro> paginaResultado = livroService.pesquisa(titulo, nomeAutor, genero, anoPublicacao, pagina, tamanhoPagina);
 
-                Page<ResultadoPesquisaLivroDTO> resultado = paginaResultado.map(livroMapper::toLivroDTO);
+                Page<LivroResponseDTO> resultado = paginaResultado.map(livroMapper::toLivroDTO);
 
 
                  return ResponseEntity.ok(resultado);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Object> atualizar(@PathVariable Long id, @RequestBody CadastroLivroDTO cadastroLivroDTO){
+    public ResponseEntity<Object> atualizar(@PathVariable Long id, @RequestBody LivroRequestDTO livroRequestDTO){
         Long idLivro = id;
 
         return livroService.obterPorId(idLivro)
                 .map(livro -> {
-                    Livro entidadeAuxiliar = livroMapper.toEntity(cadastroLivroDTO);
+                    Livro entidadeAuxiliar = livroMapper.toEntity(livroRequestDTO);
                     livro.setDataPublicacao(entidadeAuxiliar.getDataPublicacao());
                     livro.setPreco(entidadeAuxiliar.getPreco());
                     livro.setGenero(entidadeAuxiliar.getGenero());

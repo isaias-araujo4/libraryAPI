@@ -1,11 +1,11 @@
 package br.com.araujo.libraryapi.livro.mappers;
 
 import br.com.araujo.libraryapi.autor.mappers.AutorMapper;
-import br.com.araujo.libraryapi.autor.model.DTO.AutorDTO;
 import br.com.araujo.libraryapi.livro.model.GeneroLivro;
 import br.com.araujo.libraryapi.livro.model.Livro;
-import br.com.araujo.libraryapi.livro.model.dto.CadastroLivroDTO;
-import br.com.araujo.libraryapi.livro.model.dto.ResultadoPesquisaLivroDTO;
+import br.com.araujo.libraryapi.livro.model.dto.LivroRequestDTO;
+import br.com.araujo.libraryapi.livro.model.dto.LivroResponseDTO;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import javax.annotation.processing.Generated;
@@ -24,25 +24,25 @@ public class LivroMapperImpl extends LivroMapper {
     private AutorMapper autorMapper;
 
     @Override
-    public Livro toEntity(CadastroLivroDTO cadastroLivroDTO) {
-        if ( cadastroLivroDTO == null ) {
+    public Livro toEntity(LivroRequestDTO livroRequestDTO) {
+        if ( livroRequestDTO == null ) {
             return null;
         }
 
         Livro.LivroBuilder livro = Livro.builder();
 
-        livro.titulo( cadastroLivroDTO.titulo() );
-        livro.dataPublicacao( cadastroLivroDTO.dataPublicacao() );
-        livro.genero( cadastroLivroDTO.genero() );
-        livro.preco( cadastroLivroDTO.preco() );
+        livro.titulo( livroRequestDTO.titulo() );
+        livro.dataPublicacao( livroRequestDTO.dataPublicacao() );
+        livro.genero( livroRequestDTO.genero() );
+        livro.preco( livroRequestDTO.preco() );
 
-        livro.autor( autorRepository.findById(cadastroLivroDTO.idAutor()).orElse(null) );
+        livro.autor( autorRepository.findById(livroRequestDTO.idAutor()).orElse(null) );
 
         return livro.build();
     }
 
     @Override
-    public ResultadoPesquisaLivroDTO toLivroDTO(Livro livro) {
+    public LivroResponseDTO toLivroDTO(Livro livro) {
         if ( livro == null ) {
             return null;
         }
@@ -52,7 +52,7 @@ public class LivroMapperImpl extends LivroMapper {
         LocalDate dataPublicacao = null;
         GeneroLivro genero = null;
         BigDecimal preco = null;
-        AutorDTO autor = null;
+        br.com.araujo.libraryapi.autor.model.DTO.AutorRequestDTO autor = null;
 
         id = livro.getId();
         titulo = livro.getTitulo();
@@ -61,8 +61,8 @@ public class LivroMapperImpl extends LivroMapper {
         preco = livro.getPreco();
         autor = autorMapper.toAutorDTO( livro.getAutor() );
 
-        ResultadoPesquisaLivroDTO resultadoPesquisaLivroDTO = new ResultadoPesquisaLivroDTO( id, titulo, dataPublicacao, genero, preco, autor );
+        LivroResponseDTO livroResponseDTO = new LivroResponseDTO( id, titulo, dataPublicacao, genero, preco, autor );
 
-        return resultadoPesquisaLivroDTO;
+        return livroResponseDTO;
     }
 }

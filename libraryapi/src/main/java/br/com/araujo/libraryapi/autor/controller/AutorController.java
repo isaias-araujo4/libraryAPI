@@ -2,12 +2,9 @@ package br.com.araujo.libraryapi.autor.controller;
 
 import br.com.araujo.libraryapi.autor.mappers.AutorMapper;
 import br.com.araujo.libraryapi.autor.model.Autor;
-import br.com.araujo.libraryapi.autor.model.DTO.AutorDTO;
 import br.com.araujo.libraryapi.autor.service.AutorService;
+import br.com.araujo.libraryapi.autor.model.DTO.AutorRequestDTO;
 import br.com.araujo.libraryapi.global.common.GenericController;
-import br.com.araujo.libraryapi.global.DTO.ErroResponse;
-import br.com.araujo.libraryapi.global.exceptions.OperacaoNaoPermitidaException;
-import br.com.araujo.libraryapi.global.exceptions.RegistroDuplicadoException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,23 +24,23 @@ public class AutorController implements GenericController {
     private final AutorMapper autorMapper;
 
     @PostMapping
-    public  ResponseEntity<Void> salvar(@RequestBody @Valid AutorDTO autorDTO){
+    public  ResponseEntity<Void> salvar(@RequestBody @Valid AutorRequestDTO autorRequestDTO){
 
-        Autor autor = autorMapper.toEntity(autorDTO);
+        Autor autor = autorMapper.toEntity(autorRequestDTO);
         autorService.salvar(autor);
         URI location = gerarHeaderLocation(autor.getId());
         return  ResponseEntity.created(location).build();
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<AutorDTO> obterDetalhes(@PathVariable Long id){
+    public ResponseEntity<br.com.araujo.libraryapi.autor.model.DTO.AutorRequestDTO> obterDetalhes(@PathVariable Long id){
         Long idAutor = id;
 
         return  autorService
                 .obterPorId(idAutor)
                 .map(autor -> {
-                    AutorDTO autorDTO = autorMapper.toAutorDTO(autor);
-                    return ResponseEntity.ok(autorDTO);
+                    br.com.araujo.libraryapi.autor.model.DTO.AutorRequestDTO autorRequestDTO = autorMapper.toAutorDTO(autor);
+                    return ResponseEntity.ok(autorRequestDTO);
                 }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -64,16 +61,16 @@ public class AutorController implements GenericController {
     }
 
     @GetMapping
-    public  ResponseEntity<List<AutorDTO>> pesquisar(@RequestParam(value = "nome", required = false) String nome, @RequestParam(value = "nacionalidade", required = false)String nacionalidade){
+    public  ResponseEntity<List<br.com.araujo.libraryapi.autor.model.DTO.AutorRequestDTO>> pesquisar(@RequestParam(value = "nome", required = false) String nome, @RequestParam(value = "nacionalidade", required = false)String nacionalidade){
         List<Autor> resultado = autorService.pesquisa(nome, nacionalidade);
-        List<AutorDTO> lista = resultado
+        List<br.com.araujo.libraryapi.autor.model.DTO.AutorRequestDTO> lista = resultado
                 .stream()
                 .map(autorMapper::toAutorDTO).collect(Collectors.toList());
         return  ResponseEntity.ok(lista);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Void> atualizar(@PathVariable Long id, @RequestBody @Valid AutorDTO autorDto) {
+    public ResponseEntity<Void> atualizar(@PathVariable Long id, @RequestBody @Valid br.com.araujo.libraryapi.autor.model.DTO.AutorRequestDTO autorRequestDto) {
 
         Long idAutor = id;
         Optional<Autor> autorOptional = autorService.obterPorId(idAutor);
@@ -83,9 +80,9 @@ public class AutorController implements GenericController {
         }
 
         var autor = autorOptional.get();
-        autor.setNome(autorDto.nome());
-        autor.setNacionalidade(autorDto.nacionalidade());
-        autor.setDataNascimento(autorDto.dataNascimento());
+        autor.setNome(autorRequestDto.nome());
+        autor.setNacionalidade(autorRequestDto.nacionalidade());
+        autor.setDataNascimento(autorRequestDto.dataNascimento());
 
         autorService.atualizar(autor);
 

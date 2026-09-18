@@ -1,14 +1,15 @@
 package br.com.araujo.libraryapi.autor.mappers;
 
 import br.com.araujo.libraryapi.autor.model.Autor;
-import br.com.araujo.libraryapi.autor.model.DTO.AutorDTO;
+import br.com.araujo.libraryapi.autor.model.dto.AutorRequestDTO;
 
+import br.com.araujo.libraryapi.autor.model.dto.AutorResponseDTO;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface AutorMapper{
 
-    Autor toEntity(AutorDTO autorDTO);
+    Autor toEntity(AutorRequestDTO autorRequestDTO);
 
-    AutorDTO toAutorDTO(Autor autor);
+    AutorResponseDTO toResponseDTO(Autor autor);
 }
