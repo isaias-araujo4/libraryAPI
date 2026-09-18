@@ -7,12 +7,14 @@ import br.com.araujo.libraryapi.global.exceptions.OperacaoNaoPermitidaException;
 import br.com.araujo.libraryapi.livro.model.Livro;
 import br.com.araujo.libraryapi.livro.repository.LivroRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import static br.com.araujo.libraryapi.autor.repository.specs.AutorSpecs.*;
 
 @Service
 @RequiredArgsConstructor
@@ -39,20 +41,30 @@ public class AutorService {
         autorRepository.delete(autor);
     }
 
-    public List<Autor> pesquisa(String nome, String nacionalidade){
-        if (nome != null && nacionalidade != null){
-            return autorRepository.findByNomeAndNacionalidade(nome, nacionalidade);
+    public Page<Autor> pesquisa(
+            String nome,
+            String titulo,
+            String nacionalide,
+            Integer pagina,
+            Integer tamanhoPagina
+    ){
+        Specification<Autor> specs = Specification.where((root, query, cb) -> cb.conjunction());
+
+        if (nome != null) {
+            specs = specs.and(nomeLike(nome));
         }
 
-        if (nome != null){
-            return  autorRepository.findByNome(nome);
+        if (titulo != null){
+            specs = specs.and(tituloLike(titulo));
         }
 
-        if (nacionalidade != null){
-            return autorRepository.findByNacionalidade(nacionalidade);
+        if (nacionalide != null){
+            specs = specs.and(nacionalidadeLike(nacionalide));
         }
 
-        return autorRepository.findAll();
+        Pageable pageRequest = PageRequest.of(pagina, tamanhoPagina);
+
+        return autorRepository.findAll(specs, pageRequest);
     }
 
     public  void atualizar(Autor autor){
@@ -67,17 +79,4 @@ public class AutorService {
         return livroRepository.existsByAutor(autor);
     }
 
-    public List<Autor> pesquisaByExample(String nome, String nacionalidade){
-      var autor = new Autor();
-      autor.setNome(nome);
-      autor.setNacionalidade(nacionalidade);
-
-        ExampleMatcher matcher = ExampleMatcher
-                .matching()
-                .withIgnoreNullValues()
-                .withIgnoreCase()
-                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
-        Example<Autor> autorExample = Example.of(autor, matcher);
-        return autorRepository.findAll(autorExample);
-    }
 }

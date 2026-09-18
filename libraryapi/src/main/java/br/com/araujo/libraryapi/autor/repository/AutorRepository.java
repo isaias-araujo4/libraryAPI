@@ -1,13 +1,15 @@
 package br.com.araujo.libraryapi.autor.repository;
 
 import br.com.araujo.libraryapi.autor.model.Autor;
+import br.com.araujo.libraryapi.livro.model.Livro;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public interface AutorRepository extends JpaRepository<Autor, Long> {
+public interface AutorRepository extends JpaRepository<Autor, Long>, JpaSpecificationExecutor<Autor> {
 
     //query method
 

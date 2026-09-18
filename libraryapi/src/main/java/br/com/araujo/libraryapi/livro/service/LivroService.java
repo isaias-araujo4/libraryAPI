@@ -4,6 +4,7 @@ import br.com.araujo.libraryapi.autor.model.Autor;
 import br.com.araujo.libraryapi.livro.model.GeneroLivro;
 import br.com.araujo.libraryapi.livro.model.Livro;
 import br.com.araujo.libraryapi.livro.repository.LivroRepository;
+import br.com.araujo.libraryapi.livro.validator.LivroValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,9 +21,11 @@ import static br.com.araujo.libraryapi.livro.repository.specs.LivroSpecs.*;
 @RequiredArgsConstructor
 public class LivroService {
 
-    public final LivroRepository livroRepository;
+    private final LivroRepository livroRepository;
+    private final LivroValidator livroValidator;
 
     public Livro salvar(Livro livro){
+        livroValidator.validar(livro);
         return livroRepository.save(livro);
     }
 
@@ -71,6 +74,7 @@ public class LivroService {
             throw new IllegalArgumentException("para atualizar um livro é nescessario que ele esteja salvo ");
         }
 
+        livroValidator.validar(livro);
         livroRepository.save(livro);
     }
 }
