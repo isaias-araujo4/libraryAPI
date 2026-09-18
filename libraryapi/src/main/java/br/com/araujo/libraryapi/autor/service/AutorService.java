@@ -4,6 +4,7 @@ import br.com.araujo.libraryapi.autor.model.Autor;
 import br.com.araujo.libraryapi.autor.repository.AutorRepository;
 import br.com.araujo.libraryapi.autor.validator.AutorValidator;
 import br.com.araujo.libraryapi.global.exceptions.OperacaoNaoPermitidaException;
+import br.com.araujo.libraryapi.livro.model.Livro;
 import br.com.araujo.libraryapi.livro.repository.LivroRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
@@ -20,6 +21,7 @@ public class AutorService {
     private final AutorRepository autorRepository;
     private final AutorValidator autorValidator;
     private final LivroRepository livroRepository;
+
 
     public  Autor salvar(Autor autor){
         autorValidator.validar(autor);
