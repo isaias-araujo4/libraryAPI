@@ -16,5 +16,10 @@ public class UsuarioService {
     public  void salvar(Usuario usuario){
         var senha = usuario.getSenha();
         usuario.setSenha(encoder.encode(senha));
+        usuarioRepository.save(usuario);
+    }
+
+    public Usuario obterLogin(String login){
+        return usuarioRepository.findByLogin(login);
     }
 }

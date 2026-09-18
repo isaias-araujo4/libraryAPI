@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
-public record CadastroUsuarioDTO(
+public record UsuarioRequestDTO(
         @NotBlank(message = "Campo é obrigatorio")
         String nome,
 
